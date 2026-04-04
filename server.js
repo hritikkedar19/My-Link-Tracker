@@ -681,12 +681,14 @@ const axios = require("axios");
 const UAParser = require("ua-parser-js");
 const QRCode = require("qrcode");
 const { Parser } = require("json2csv");
+const cors = require("cors"); 
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended:true }));
 app.use(express.static("public"));
+app.use(cors());
 
 
 const PORT = process.env.PORT || 3000;
