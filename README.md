@@ -41,7 +41,7 @@ ADMIN_PASSWORD=1234
 6. Start:
 
 ```powershell
-npm start
+Copy-Item .env.example .env
 ```
 
 7. Open `http://localhost:3000`.
