@@ -1,95 +1,78 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<title>Smart Link Tracker</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create short links, QR codes and track clicks locally.">
+  <title>Smart Link Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
-
 <body>
+  <main>
+    <section id="loginBox" class="login-card">
+      <div class="brand-mark">↗</div>
+      <p class="eyebrow">PRIVATE DASHBOARD</p>
+      <h1>Smart Link Tracker</h1>
+      <p class="muted">Sign in to manage and analyse your links.</p>
+      <form id="loginForm">
+        <label for="user">Username</label>
+        <input id="user" autocomplete="username" placeholder="admin" required>
+        <label for="pass">Password</label>
+        <input id="pass" type="password" autocomplete="current-password" placeholder="1234" required>
+        <button class="primary" type="submit">Login</button>
+      </form>
+      <p class="login-hint">Default login: admin / 1234</p>
+    </section>
 
-<div id="loginBox" class="login-card">
+    <section id="dashboard" class="container hidden">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LINK MANAGEMENT</p>
+          <h1>Smart Link Tracker</h1>
+        </div>
+        <button id="logoutButton" class="secondary" type="button">Logout</button>
+      </header>
 
-<h2>Admin Login</h2>
+      <section class="summary-grid">
+        <article class="summary-card"><span>Total Links</span><strong id="totalLinks">0</strong></article>
+        <article class="summary-card"><span>Total Clicks</span><strong id="totalClicks">0</strong></article>
+        <article class="summary-card"><span>Active Links</span><strong id="activeLinks">0</strong></article>
+      </section>
 
-<input id="user" placeholder="Username">
-<input id="pass" placeholder="Password" type="password">
+      <section class="card">
+        <div class="section-heading">
+          <div><p class="eyebrow">CREATE</p><h2>Generate a short link</h2></div>
+        </div>
+        <form id="shortenForm" class="form-grid">
+          <div class="full"><label for="url">Destination URL</label><input id="url" type="text" placeholder="https://example.com" required></div>
+          <div><label for="title">Title</label><input id="title" type="text" placeholder="Portfolio website"></div>
+          <div><label for="custom">Custom name</label><input id="custom" type="text" placeholder="portfolio"></div>
+          <div><label for="expiry">Expiry date</label><input id="expiry" type="date"></div>
+          <div class="action-cell"><button id="generateButton" class="primary" type="submit">Generate Link</button></div>
+        </form>
+        <div id="message" role="status"></div>
+        <div id="responseBox"></div>
+      </section>
 
-<button class="primary" onclick="login()">
-Login
-</button>
+      <section class="card">
+        <div class="section-heading"><div><p class="eyebrow">ANALYTICS</p><h2>Clicks by link</h2></div></div>
+        <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      </section>
 
-</div>
-
-
-
-<div id="dashboard" style="display:none" class="container">
-
-<h1>Smart Link Tracker</h1>
-
-
-<div class="card">
-
-<h2>Create Link</h2>
-
-<input id="url" placeholder="Enter URL">
-
-<input id="title" placeholder="Title">
-
-<input id="custom" placeholder="Custom name (optional)">
-
-<label>Expiry date</label>
-
-<input id="expiry" type="date">
-
-<button class="primary" onclick="shorten()">
-
-Generate Link
-
-</button>
-
-</div>
-
-
-<div id="responseBox"></div>
-
-
-<div class="card">
-
-<h2>Analytics</h2>
-
-<canvas id="chart"></canvas>
-
-</div>
-
-
-<div class="card">
-
-<h2>All Links</h2>
-
-<button class="refresh-btn" onclick="loadStats()">
-Refresh
-</button>
-
-<button class="primary" onclick="downloadCSV()">
-Export CSV
-</button>
-
-<div id="links" class="grid"></div>
-
-</div>
-
-
-</div>
-
-
-<script src="script.js"></script>
-
+      <section class="card">
+        <div class="section-heading">
+          <div><p class="eyebrow">LIBRARY</p><h2>All links</h2></div>
+          <div class="button-row">
+            <button id="refreshButton" class="secondary" type="button">Refresh</button>
+            <button id="exportButton" class="primary compact" type="button">Export CSV</button>
+          </div>
+        </div>
+        <div id="emptyState" class="empty-state hidden">No links yet. Create your first short link above.</div>
+        <div id="links" class="grid"></div>
+      </section>
+    </section>
+  </main>
 </body>
-
 </html>
