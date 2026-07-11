@@ -3,76 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Create short links, QR codes and track clicks locally.">
   <title>Smart Link Tracker</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
-  <script src="script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <main>
-    <section id="loginBox" class="login-card">
-      <div class="brand-mark">↗</div>
-      <p class="eyebrow">PRIVATE DASHBOARD</p>
-      <h1>Smart Link Tracker</h1>
-      <p class="muted">Sign in to manage and analyse your links.</p>
-      <form id="loginForm">
-        <label for="user">Username</label>
-        <input id="user" autocomplete="username" placeholder="admin" required>
-        <label for="pass">Password</label>
-        <input id="pass" type="password" autocomplete="current-password" placeholder="1234" required>
-        <button class="primary" type="submit">Login</button>
-      </form>
-      <p class="login-hint">Default login: admin / 1234</p>
-    </section>
+  <div id="toast"></div>
 
-    <section id="dashboard" class="container hidden">
-      <header class="topbar">
+  <section id="loginView" class="login-shell">
+    <div class="login-card">
+      <div class="brand-icon">↗</div>
+      <h1>Smart Link Tracker</h1>
+      <p>Secure analytics dashboard for your short links.</p>
+      <input id="loginUser" placeholder="Username" autocomplete="username">
+      <input id="loginPass" placeholder="Password" type="password" autocomplete="current-password">
+      <button class="primary full" onclick="login()">Sign in</button>
+      <small>Default local login: admin / 1234</small>
+    </div>
+  </section>
+
+  <main id="dashboard" class="app hidden">
+    <aside class="sidebar">
+      <div>
+        <h2>SmartLink</h2>
+        <p>Tracker Dashboard</p>
+      </div>
+      <nav>
+        <button onclick="scrollToSection('overview')">Overview</button>
+        <button onclick="scrollToSection('create')">Create Link</button>
+        <button onclick="scrollToSection('analytics')">Analytics</button>
+        <button onclick="scrollToSection('linksSection')">All Links</button>
+      </nav>
+      <button class="logout" onclick="logout()">Logout</button>
+    </aside>
+
+    <div class="content">
+      <header>
         <div>
-          <p class="eyebrow">LINK MANAGEMENT</p>
-          <h1>Smart Link Tracker</h1>
+          <p class="eyebrow">DASHBOARD</p>
+          <h1>Link performance overview</h1>
         </div>
-        <button id="logoutButton" class="secondary" type="button">Logout</button>
+        <button class="secondary" onclick="loadStats()">Refresh data</button>
       </header>
 
-      <section class="summary-grid">
-        <article class="summary-card"><span>Total Links</span><strong id="totalLinks">0</strong></article>
-        <article class="summary-card"><span>Total Clicks</span><strong id="totalClicks">0</strong></article>
-        <article class="summary-card"><span>Active Links</span><strong id="activeLinks">0</strong></article>
+      <section id="overview" class="metrics">
+        <div class="metric"><span>Total links</span><strong id="totalLinks">0</strong></div>
+        <div class="metric"><span>Total clicks</span><strong id="totalClicks">0</strong></div>
+        <div class="metric"><span>Unique visitors</span><strong id="uniqueVisitors">0</strong></div>
+        <div class="metric"><span>Active links</span><strong id="activeLinks">0</strong></div>
       </section>
 
-      <section class="card">
-        <div class="section-heading">
-          <div><p class="eyebrow">CREATE</p><h2>Generate a short link</h2></div>
+      <section id="create" class="panel">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">CREATE</p>
+            <h2>Generate a tracked short link</h2>
+          </div>
         </div>
-        <form id="shortenForm" class="form-grid">
-          <div class="full"><label for="url">Destination URL</label><input id="url" type="text" placeholder="https://example.com" required></div>
-          <div><label for="title">Title</label><input id="title" type="text" placeholder="Portfolio website"></div>
-          <div><label for="custom">Custom name</label><input id="custom" type="text" placeholder="portfolio"></div>
-          <div><label for="expiry">Expiry date</label><input id="expiry" type="date"></div>
-          <div class="action-cell"><button id="generateButton" class="primary" type="submit">Generate Link</button></div>
-        </form>
-        <div id="message" role="status"></div>
+
+        <div class="form-grid">
+          <label class="wide">Destination URL
+            <input id="url" placeholder="https://example.com">
+          </label>
+          <label>Title
+            <input id="title" placeholder="Campaign name">
+          </label>
+          <label>Custom name
+            <input id="custom" placeholder="summer-sale">
+          </label>
+          <label>Expiry date
+            <input id="expiry" type="date">
+          </label>
+          <label>Password protection
+            <input id="linkPassword" type="password" placeholder="Optional password">
+          </label>
+        </div>
+
+        <button id="generateButton" class="primary" onclick="shorten()">Generate short link</button>
         <div id="responseBox"></div>
       </section>
 
-      <section class="card">
-        <div class="section-heading"><div><p class="eyebrow">ANALYTICS</p><h2>Clicks by link</h2></div></div>
+      <section id="analytics" class="panel">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">ANALYTICS</p>
+            <h2>Click performance</h2>
+          </div>
+        </div>
         <div class="chart-wrap"><canvas id="chart"></canvas></div>
       </section>
 
-      <section class="card">
-        <div class="section-heading">
-          <div><p class="eyebrow">LIBRARY</p><h2>All links</h2></div>
-          <div class="button-row">
-            <button id="refreshButton" class="secondary" type="button">Refresh</button>
-            <button id="exportButton" class="primary compact" type="button">Export CSV</button>
+      <section id="linksSection" class="panel">
+        <div class="section-title actions">
+          <div>
+            <p class="eyebrow">LINKS</p>
+            <h2>All tracked links</h2>
           </div>
+          <button class="secondary" onclick="downloadCSV()">Export CSV</button>
         </div>
-        <div id="emptyState" class="empty-state hidden">No links yet. Create your first short link above.</div>
-        <div id="links" class="grid"></div>
+        <div id="emptyState" class="empty hidden">No links created yet.</div>
+        <div id="links" class="link-grid"></div>
       </section>
-    </section>
+    </div>
   </main>
+
+  <script src="script.js"></script>
 </body>
 </html>

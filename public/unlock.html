@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protected Link</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <section class="login-shell">
+    <div class="login-card">
+      <div class="brand-icon">🔒</div>
+      <h1>Protected link</h1>
+      <p>Enter the password to continue.</p>
+      <input id="password" type="password" placeholder="Link password">
+      <button class="primary full" onclick="unlock()">Open link</button>
+      <p id="error" style="color:#e34d59"></p>
+    </div>
+  </section>
+  <script>
+    async function unlock() {
+      const id = location.pathname.split("/").filter(Boolean).pop();
+      const response = await fetch("/track-and-redirect/" + encodeURIComponent(id), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: document.getElementById("password").value })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        document.getElementById("error").textContent = data.error || "Unable to open link";
+        return;
+      }
+      location.href = data.redirectUrl;
+    }
+  </script>
+</body>
+</html>
