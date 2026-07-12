@@ -69,4 +69,4 @@ Copy-Item .env.example .env
    - `BASE_URL=https://your-service-name.onrender.com`
 8. Redeploy.
 
-QR codes will then contain the public Render address and work from mobile phones.
+QR codes will then contain the public Render address & work from mobile phones.
