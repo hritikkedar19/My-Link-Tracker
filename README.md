@@ -1,4 +1,4 @@
-### Smart Link Tracker
+# Smart Link Tracker
 
 A full-stack MongoDB link tracking application with:
 
